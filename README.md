@@ -5,4 +5,3 @@ __201735807 권순완__
 __201735826 류창민__  
 __201735837 박찬빈__  
 __201735879 정호진__  
-<img src = "https://github.com/changmeen/CG_TermProject/issues/1#issue-1052103462">
