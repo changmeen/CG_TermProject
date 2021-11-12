@@ -16,15 +16,15 @@
             Computer Graphics TermProject Pinball Game<br />
             Space - launch ball, z - left flipper, / - right flipper
     </div>
-    <div id="score_div"></div>
-    <div class="wrap_box">
-        <div class="name_box">
+   <div id="score_div"></div>
+      <div class="wrap_box">
+         <div class="name_box">
             <span class="Score_id">score</span>
             <span id="Score">0</span>
+         </div>
         </div>
-    </div>
-    </div>
-
+   </div>
+         
     <script type="module">
         import * as THREE from '../build/three.module.js';
         import {
@@ -42,10 +42,8 @@
         import '../build/bllem-cannon.js';
 
         var camera, scene, renderer, world, mass, body, shape, geometry, material, mesh, flipperleft, flipperright, field, bumperleft, bumperright, object, c, h;
-        var count = 0;
-        var check1 = 1,
-            check2 = 1,
-            check3 = 1;
+        var score = 0;
+      var check1=1,check2=1,check3=1;
         const timeStep = 1 / 120;
 
         const clock = new THREE.Clock();
@@ -105,7 +103,6 @@
             speed: 0,
             currentspeed: 0
         }
-        w
 
         flipperright = {
             max: -60,
@@ -241,11 +238,12 @@
             });
         }
 
-        function loadmodel(modelpath, modelfile, meshsize, smooth, scenekey, posx, posy, posz, rotation, meshmat, modelmass) {
-
-            this.smooth = smooth;
+        function loadmodel(modelpath, modelfile, meshsize, smooth, scenekey, posx,
+      posy, posz, rotation, meshmat, modelmass) {
 
             this.loader = new GLTFLoader(manager).setPath(modelpath);
+         
+         this.smooth = smooth;
             this.loader.load(modelfile, function(gltf) {
 
                 this.gltf = gltf;
@@ -264,10 +262,12 @@
                 // Might be used someday, have to look into bufferGeometry
 
                 this.gltf.scene.traverse(function(child) {
+
                     if (child.isMesh) {
                         glTFGeometry = new THREE.Geometry().fromBufferGeometry(child.geometry);
                         scale = child.scale;
                     }
+
                 });
 
                 var vertices = [],
@@ -316,51 +316,48 @@
                 world.addBody(bodies[scenekey]);
 
                 var ballLight = new THREE.PointLight(0xCFFFE5, 1, 5);
-
                 bodies.o.addEventListener("collide", function(e) {
-                    console.log("Collision Detection at Bumper2")
-                    if (check1 == 1) {
-                        score += 100;
-                        console.log("score : " + score);
-                        check1 = 0;
-                    }
-                    ballLight.position.set(bodies.o.position.x, bodies.o.position.y + 1, bodies.o.position.z);
-                    scene.add(ballLight);
-                    setTimeout(function() {
-                        scene.remove(ballLight);
-                        check1 = 1;
-                    }, 500);
-                });
+               console.log("Collision Detection at Bumper2")
+               if(check1==1){
+                  score+=100;
+                  console.log("score : " + score);
+                  check1=0;
+               }
+               ballLight.position.set(bodies.o.position.x, bodies.o.position.y + 1, bodies.o.position.z);
+               scene.add(ballLight);
+               setTimeout(function() {
+                  scene.remove(ballLight);
+                  check1=1;
+               }, 500);
+            });
 
-                bodies.p.addEventListener("collide", function(e) {
-                    console.log("Collision Detection at Bumper1")
-                    if (check2 == 1) {
-                        count++;
-                        console.log("score : " + count);
-                        check2 = 0;
-                    }
-                    ballLight.position.set(bodies.p.position.x, bodies.p.position.y + 1, bodies.p.position.z);
-                    scene.add(ballLight);
-                    setTimeout(function() {
-                        scene.remove(ballLight);
-                        check2 = 1;
-                    }, 500);
-                });
+            bodies.p.addEventListener("collide", function(e) {
+            console.log("Collision Detection at Bumper1")
+            if(check2==1){
+            score+=100;
+            console.log("score : " + score);
+            check2=0;
+            }ballLight.position.set(bodies.p.position.x, bodies.p.position.y + 1, bodies.p.position.z);
+            scene.add(ballLight);
+            setTimeout(function() {
+            scene.remove(ballLight);
+            check2=1;
+            }, 500);
+            });
 
-                bodies.q.addEventListener("collide", function(e) {
-                    console.log("Collision Detection at Bumper3")
-                    if (check3 == 1) {
-                        count++;
-                        console.log("score : " + count);
-                        check3 = 0;
-                    }
-                    ballLight.position.set(bodies.q.position.x, bodies.q.position.y + 1, bodies.q.position.z);
-                    scene.add(ballLight);
-                    setTimeout(function() {
-                        scene.remove(ballLight);
-                        check3 = 1;
-                    }, 500);
-                });
+            bodies.q.addEventListener("collide", function(e) {
+            console.log("Collision Detection at Bumper3")     
+            if(check3==1){  
+            score+=100;    
+            console.log("score : " + score);
+            check3=0;
+            }ballLight.position.set(bodies.q.position.x, bodies.q.position.y + 1, bodies.q.position.z);
+            scene.add(ballLight);
+            setTimeout(function() {
+            scene.remove(ballLight);
+            check3=1;
+            }, 500);
+            });
 
 
             }.bind(this));
@@ -432,8 +429,8 @@
             balls[ballscount] = sphere;
             ballscount++;
             body.addEventListener("collide", function(e) {
-                if (e.contact.bj.index == 20 || e.contact.bj.index == 12 || e.contact.bj.index == 1) {
-                    count = 0;
+                if (e.contact.bj.index == 1) {
+                    score = 0;
                 }
 
                 if (e.body.id == "2") {
@@ -559,8 +556,8 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            var score = document.getElementById('Score');
-            score.innerHTML = count;
+         var score1 = document.getElementById('Score');
+         score1.innerHTML = score;
             render();
         }
 
@@ -568,9 +565,6 @@
             renderer.render(scene, camera);
         }
 
-        function turnoff() {
-            scene.remove(ballLight);
-        }
     </script>
 
 </body>

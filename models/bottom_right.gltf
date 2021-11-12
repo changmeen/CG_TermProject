@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v1.6.16",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -8,14 +8,132 @@
         {
             "name" : "Scene",
             "nodes" : [
-                0
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
             ]
         }
     ],
     "nodes" : [
         {
+            "name" : "Light.001",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558803558349609,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "name" : "Camera.001",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958309173583984,
+                6.925790786743164
+            ]
+        },
+        {
+            "name" : "Light.002",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558803558349609,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "name" : "Camera.002",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958309173583984,
+                6.925790786743164
+            ]
+        },
+        {
             "mesh" : 0,
-            "name" : "Cube.002"
+            "name" : "Cube.003"
+        },
+        {
+            "name" : "Camera.003",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958309173583984,
+                6.925790786743164
+            ]
+        },
+        {
+            "name" : "Light",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558803558349609,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "name" : "Camera",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.358891487121582,
+                4.958309173583984,
+                6.925790786743164
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "Material.003",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
         }
     ],
     "meshes" : [
@@ -28,9 +146,21 @@
                         "NORMAL" : 1,
                         "TEXCOORD_0" : 2
                     },
-                    "indices" : 3
+                    "indices" : 3,
+                    "material" : 0
                 }
             ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "uri" : "dark_wood.jpg"
         }
     ],
     "accessors" : [
@@ -91,10 +221,16 @@
             "byteOffset" : 768
         }
     ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9987
+        }
+    ],
     "buffers" : [
         {
             "byteLength" : 840,
-            "uri" : "data:application/octet-stream;base64,AAC4wAAAgL8AAEBAAAC4wAAAgL8AAEBAAAC4wAAAgL8AAEBAAAC4wAAAgD8AAEBAAAC4wAAAgD8AAEBAAAC4wAAAgD8AAEBAAACgPwAAgL8AAEDAAACgPwAAgL8AAEDAAACgPwAAgL8AAEDAAACgPwAAgD8AAEDAAACgPwAAgD8AAEDAAACgPwAAgD8AAEDAAAAQQAAAgL8AAEBAAAAQQAAAgL8AAEBAAAAQQAAAgL8AAEBAAAAQQAAAgD8AAEBAAAAQQAAAgD8AAEBAAAAQQAAAgD8AAEBAAAAQQAAAgL8AAEDAAAAQQAAAgL8AAEDAAAAQQAAAgL8AAEDAAAAQQAAAgD8AAEDAAAAQQAAAgD8AAEDAAAAQQAAAgD8AAEDARJomvwAAAACkXkK/AAAAAAAAgL8AAACAAAAAAAAAAAAAAIA/RJomvwAAAACkXkK/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAACARJomvwAAAACkXkK/AAAAAAAAgL8AAACAAAAAAAAAAAAAAIC/RJomvwAAAACkXkK/AAAAAAAAAAAAAIC/AAAAAAAAgD8AAACAAAAAAAAAgL8AAACAAAAAAAAAAAAAAIA/AACAPwAAAAAAAACAAAAAAAAAAAAAAIA/AAAAAAAAgD8AAACAAACAPwAAAAAAAACAAAAAAAAAgL8AAACAAAAAAAAAAAAAAIC/AACAPwAAAAAAAACAAAAAAAAAAAAAAIC/AAAAAAAAgD8AAACAAACAPwAAAAAAAACAAADAPgAAgD8AAAA+AACAPgAAwD4AAAAAAAAgPwAAgD8AACA/AAAAAAAAYD8AAIA+AADAPgAAQD8AAAA+AAAAPwAAwD4AAEA/AAAgPwAAQD8AACA/AABAPwAAYD8AAAA/AADAPgAAgD4AAMA+AACAPgAAwD4AAIA+AAAgPwAAgD4AACA/AACAPgAAID8AAIA+AADAPgAAAD8AAMA+AAAAPwAAwD4AAAA/AAAgPwAAAD8AACA/AAAAPwAAID8AAAA/AAADAAkAAAAJAAYACAAKABUACAAVABMAFAAXABEAFAARAA4ADQAPAAQADQAEAAIABwASAAwABwAMAAEAFgALAAUAFgAFABAA"
+            "uri" : "bottom_right.bin"
         }
     ]
 }
