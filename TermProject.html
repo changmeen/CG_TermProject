@@ -16,15 +16,15 @@
             Computer Graphics TermProject Pinball Game<br />
             Space - launch ball, z - left flipper, / - right flipper
     </div>
-   <div id="score_div"></div>
-      <div class="wrap_box">
-         <div class="name_box">
+    <div id="score_div"></div>
+    <div class="wrap_box">
+        <div class="name_box">
             <span class="Score_id">score</span>
             <span id="Score">0</span>
-         </div>
         </div>
-   </div>
-         
+    </div>
+    </div>
+
     <script type="module">
         import * as THREE from '../build/three.module.js';
         import {
@@ -43,7 +43,9 @@
 
         var camera, scene, renderer, world, mass, body, shape, geometry, material, mesh, flipperleft, flipperright, field, bumperleft, bumperright, object, c, h;
         var score = 0;
-      var check1=1,check2=1,check3=1;
+        var check1 = 1,
+            check2 = 1,
+            check3 = 1;
         const timeStep = 1 / 120;
 
         const clock = new THREE.Clock();
@@ -62,6 +64,7 @@
 
         var bodies = {}
 
+        // Make Materials for CANNON.js
         const cannonMaterials = {};
 
         cannonMaterials["mat"] = new CANNON.Material();
@@ -69,6 +72,8 @@
         cannonMaterials["bumperMaterial"] = new CANNON.Material();
         cannonMaterials["slingshotMaterial"] = new CANNON.Material();
 
+        // friction means 마찰지수, restitution means 반발력
+        // make 4 materials we need for ground, bumper, slingshot and flipper
         const mat_ground = new CANNON.ContactMaterial(cannonMaterials["groundMaterial"], cannonMaterials["mat"], {
             friction: 0.0,
             restitution: 0.2
@@ -85,17 +90,21 @@
             friction: 0.0,
             restitution: 1.5
         });
-
+        
+        // object color
         const matStdObjects = new THREE.MeshLambertMaterial({
             color: 0xffffff
         });
-
+        
+        // From gltf.json file get objects
         const response = await fetch('gltflist.json');
         const data = await response.text();
         var gltflist = JSON.parse(data);
 
         var models = {};
-
+        
+        // flipper is bar that we control
+        // set flipper's degree and speed
         flipperleft = {
             max: 22.5,
             min: -10,
@@ -114,14 +123,16 @@
             startpoint: 0,
             pointdiff: 0
         }
-
+        
+        // When z or / is pressed flipper move
         var zpressed = false;
         var slashpressed = false;
 
         init();
         initCannon();
         gameLoop();
-
+        
+        // Here initCannon set Cannon objects sphere and plane and gravity(물리법칙 적용)
         function initCannon() {
 
             const radius = 0.5; // m
@@ -130,8 +141,9 @@
             world = new CANNON.World();
             world.gravity.set(0, -30, 9.82); // m/s²
             world.broadphase = new CANNON.NaiveBroadphase();
-            //world.solver.iterations = 10;
-
+            
+            // Make sphere in cannon
+            // Because sphere move we set mass not 0
             shape = new CANNON.Sphere(radius);
             mass = 1;
             body = new CANNON.Body({
@@ -153,8 +165,8 @@
             });
             const groundShape = new CANNON.Plane();
             groundBody.addShape(groundShape);
-            //world.addBody(groundBody);
-
+            
+            // Add cannon objects to world(to link with Threejs)
             world.addContactMaterial(mat_ground);
             world.addContactMaterial(mat_bumper);
             world.addContactMaterial(mat_slingshot);
@@ -162,18 +174,22 @@
             animate();
 
         }
-
+        
+        // In itit we make camera, light and create objects
+        // By using Threejs
         function init() {
 
             const container = document.createElement('div');
             document.body.appendChild(container);
-
+            
+            //Create Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 30, 10);
 
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0xffffff);
-
+            
+            // Create Light
             const light = new THREE.AmbientLight(0x404040); // soft white light
 
             const spotLight = new THREE.SpotLight(0xffffff, 1);
@@ -181,11 +197,13 @@
             scene.add(spotLight);
 
             checkLoaded();
-
+            
+            // From read gltf.json files get informations.
             Object.keys(gltflist).forEach(key => {
                 loaded[key] = new loadmodel(gltflist[key].modelpath, gltflist[key].modelfile, gltflist[key].size, gltflist[key].smooth, key, gltflist[key].posx, gltflist[key].posy, gltflist[key].posz, gltflist[key].rotation, gltflist[key].meshmat, gltflist[key].mass);
             });
-
+            
+            // Create renderer
             renderer = new THREE.WebGLRenderer({
                 antialias: true
             });
@@ -195,14 +213,16 @@
             renderer.toneMappingExposure = 1;
             renderer.outputEncoding = THREE.sRGBEncoding;
             container.appendChild(renderer.domElement);
-
+            
+            // Because we use OrbitControls add controler
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.addEventListener('change', render); // use if there is no animation loop
             controls.minDistance = 2;
             controls.maxDistance = 40;
             controls.target.set(0, 0, 0);
             controls.update();
-
+            
+            // Size of game is controled depend on window size
             window.addEventListener('resize', onWindowResize);
             window.addEventListener("keydown", event => {
                 if (event.isComposing || event.keyCode === 90) {
@@ -226,6 +246,8 @@
                 }
 
             });
+            
+            // Add eventListener for z and / pressed
             window.addEventListener("keyup", event => {
                 if (event.isComposing || event.keyCode === 90) {
                     zpressed = false;
@@ -237,13 +259,14 @@
                 }
             });
         }
-
+        
+        // From collected information of objects Create objects
         function loadmodel(modelpath, modelfile, meshsize, smooth, scenekey, posx,
-      posy, posz, rotation, meshmat, modelmass) {
+            posy, posz, rotation, meshmat, modelmass) {
 
             this.loader = new GLTFLoader(manager).setPath(modelpath);
-         
-         this.smooth = smooth;
+
+            this.smooth = smooth;
             this.loader.load(modelfile, function(gltf) {
 
                 this.gltf = gltf;
@@ -289,7 +312,9 @@
 
                     faces.push([a, b, c]);
                 }
-
+                
+                // Each object have cannon object too
+                // We  need to link them
                 shape = new CANNON.ConvexPolyhedron(vertices, faces);
 
                 var gltfBody = new CANNON.Body({
@@ -300,64 +325,74 @@
 
                 const gltfShape = glTFGeometry;
                 gltfBody.addShape(shape);
-
+                
+                // Every objects are stored in bodies variable
                 bodies[scenekey] = gltfBody;
 
                 this.gltf.scene.castShadow = true;
                 this.gltf.scene.receiveShadow = true;
-                scene.add(this.gltf.scene);
-
+                
+                scene.add(this.gltf.scene)
+                
+                // For collision we need radians and quaternion
                 const radians = THREE.Math.degToRad(rotation);
                 const quaternion = new THREE.Quaternion();
                 gltfBody.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), radians);
-
+                
+                // Every Threejs and Cannonjs objects postions, quaternions are same
                 this.gltf.scene.position.copy(gltfBody.position);
                 this.gltf.scene.quaternion.copy(gltfBody.quaternion);
+                // Add objects to world
                 world.addBody(bodies[scenekey]);
-
-                var ballLight = new THREE.PointLight(0xCFFFE5, 1, 5);
+                
+                // ballLight is illumination effect that occurs
+                // When sphere collide with bumpers
+                // When sphere collide with bumper, score += 100
+                var ballLight = new THREE.PointLight(0xFF0000, 5, 5);
                 bodies.o.addEventListener("collide", function(e) {
-               console.log("Collision Detection at Bumper2")
-               if(check1==1){
-                  score+=100;
-                  console.log("score : " + score);
-                  check1=0;
-               }
-               ballLight.position.set(bodies.o.position.x, bodies.o.position.y + 1, bodies.o.position.z);
-               scene.add(ballLight);
-               setTimeout(function() {
-                  scene.remove(ballLight);
-                  check1=1;
-               }, 500);
-            });
+                    console.log("Collision Detection at Bumper2")
+                    if (check1 == 1) {
+                        score += 100;
+                        console.log("score : " + score);
+                        check1 = 0;
+                    }
+                    ballLight.position.set(bodies.o.position.x, bodies.o.position.y + 1, bodies.o.position.z);
+                    scene.add(ballLight);
+                    setTimeout(function() {
+                        scene.remove(ballLight);
+                        check1 = 1;
+                    }, 500);
+                });
 
-            bodies.p.addEventListener("collide", function(e) {
-            console.log("Collision Detection at Bumper1")
-            if(check2==1){
-            score+=100;
-            console.log("score : " + score);
-            check2=0;
-            }ballLight.position.set(bodies.p.position.x, bodies.p.position.y + 1, bodies.p.position.z);
-            scene.add(ballLight);
-            setTimeout(function() {
-            scene.remove(ballLight);
-            check2=1;
-            }, 500);
-            });
+                bodies.p.addEventListener("collide", function(e) {
+                    console.log("Collision Detection at Bumper1")
+                    if (check2 == 1) {
+                        score += 100;
+                        console.log("score : " + score);
+                        check2 = 0;
+                    }
+                    ballLight.position.set(bodies.p.position.x, bodies.p.position.y + 1, bodies.p.position.z);
+                    scene.add(ballLight);
+                    setTimeout(function() {
+                        scene.remove(ballLight);
+                        check2 = 1;
+                    }, 500);
+                });
 
-            bodies.q.addEventListener("collide", function(e) {
-            console.log("Collision Detection at Bumper3")     
-            if(check3==1){  
-            score+=100;    
-            console.log("score : " + score);
-            check3=0;
-            }ballLight.position.set(bodies.q.position.x, bodies.q.position.y + 1, bodies.q.position.z);
-            scene.add(ballLight);
-            setTimeout(function() {
-            scene.remove(ballLight);
-            check3=1;
-            }, 500);
-            });
+                bodies.q.addEventListener("collide", function(e) {
+                    console.log("Collision Detection at Bumper3")
+                    if (check3 == 1) {
+                        score += 100;
+                        console.log("score : " + score);
+                        check3 = 0;
+                    }
+                    ballLight.position.set(bodies.q.position.x, bodies.q.position.y + 1, bodies.q.position.z);
+                    scene.add(ballLight);
+                    setTimeout(function() {
+                        scene.remove(ballLight);
+                        check3 = 1;
+                    }, 500);
+                });
 
 
             }.bind(this));
@@ -383,14 +418,15 @@
                 console.log('There was an error loading ' + url);
             };
         }
-
+        
+        // For make moving objects(flipper, sphere)
         function initMachine() {
             flipperHinge();
             flipperStartPos();
             createBall();
         }
 
-
+        // Hinge is 경첩 so we need to control this to move flippers
         function flipperHinge() {
             c = new CANNON.HingeConstraint(bodies.g, bodies.c, {
                 pivotA: new CANNON.Vec3(gltflist.c.posx, gltflist.c.posy, gltflist.c.posz),
@@ -417,9 +453,13 @@
 
         //Create ball
         function createBall() {
+            // Make sphere in Threejs too. (We made sphere in cannon at initCannon)
+            // Set ball color
+            // roughness means how rough it is (얼마나 거치냐 0~1)
+            // metalness means how sphere looks like metal(얼마나 금속에 가깝냐 0~1)
             const geometry = new THREE.SphereGeometry(0.5, 32, 32);
             const material = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
+                color: 0x11ff11,
                 roughness: 0.14,
                 metalness: 1
             });
@@ -428,11 +468,14 @@
             scene.add(sphere);
             balls[ballscount] = sphere;
             ballscount++;
+            // When ball collide with start position (index == 1)
+            // Then reset the score to 0
             body.addEventListener("collide", function(e) {
                 if (e.contact.bj.index == 1) {
                     score = 0;
                 }
-
+                
+                // To check if ball is at start position so it can launch or not
                 if (e.body.id == "2") {
                     balllaunched = false;
                 }
@@ -445,8 +488,8 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             render();
         }
-
-
+        
+        // This function is to check physic elements for time to time
         function updatePhysics() {
             world.step(timeStep);
             if (loadingDone) {
@@ -459,7 +502,8 @@
 
             }
         }
-
+        
+        // This function calls updating functions for time to time
         function gameLoop() {
             const delta = clock.getDelta();
             var ticks = Math.round(delta / (1 / 120));
@@ -470,7 +514,8 @@
                 gameLoop();
             }, ticks);
         };
-
+        
+        // To update Flippers
         function updateFlippers() {
             if (loadingDone) {
                 //setting previous degree
@@ -553,18 +598,18 @@
                 }
             }
         }
-
+        
+        // Because time goes and score changes we need to re-animate
         function animate() {
             requestAnimationFrame(animate);
-         var score1 = document.getElementById('Score');
-         score1.innerHTML = score;
+            var score1 = document.getElementById('Score');
+            score1.innerHTML = score;
             render();
         }
 
         function render() {
             renderer.render(scene, camera);
         }
-
     </script>
 
 </body>
